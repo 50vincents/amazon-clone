@@ -35,7 +35,7 @@ function Payment() {
     }
 
     getClientSecret();
-  }, [basket])
+  }, [basket]) // Every time basket changes in payment page, new req sent to stripe with new client secret
 
 
   const handleSubmit = async(event) => {
@@ -54,7 +54,11 @@ function Payment() {
       setError(null);
       setProcessing(false);
 
-      history.replaceState('/orders'); // Swap payment page, don't want to go back so no push
+      dispatch({
+        type: 'EMPTY_BASKET'
+      })
+
+      history.replace('/orders'); // Swap payment page, don't want to go back so no push
     })
   }
 
