@@ -1,15 +1,15 @@
 import React from 'react'
 import '../styles/CheckoutProduct.css'
-import { useStateValue } from '../react-context/StateProvider';
+import { useDispatch } from 'react-redux';
+import { removeFromBasket } from '../features/basketSlice';
 
 function CheckoutProduct({ id, image, title, price, rating, hideButton }) {
-  const [state, dispatch] = useStateValue();
+  const dispatch = useDispatch();
 
-  const removeFromBasket = () => {
-    dispatch({
-      type: 'REMOVE_FROM_BASKET',
-      id: id,
-    });
+  const removeBasket = () => {
+    dispatch(
+      removeFromBasket({id: id})
+    );
   };
 
   return (
@@ -32,7 +32,7 @@ function CheckoutProduct({ id, image, title, price, rating, hideButton }) {
             ))}
         </div>
         {!hideButton && (
-          <button onClick={removeFromBasket}>Remove From Basket</button>
+          <button onClick={removeBasket}>Remove From Basket</button>
         )}
       </div>
     </div>

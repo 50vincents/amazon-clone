@@ -3,11 +3,14 @@ import '../styles/Header.css';
 import SearchIcon from "@material-ui/icons/Search";
 import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
 import { Link } from 'react-router-dom';
-import { useStateValue } from '../react-context/StateProvider';
 import { auth } from '../firebase';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../features/userSlice';
+import { selectBasket } from '../features/basketSlice';
 
 function Header() {
-  const [{ basket, user }, dispatch] = useStateValue();
+  const user = useSelector(selectUser);
+  const basket = useSelector(selectBasket);
 
   const handleAuthentication = () => {
     if (user) {

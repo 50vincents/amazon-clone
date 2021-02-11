@@ -8,37 +8,33 @@ import Payment from './components/Payment';
 import Orders from './components/Orders';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { auth } from './firebase';
-import { useStateValue } from './react-context/StateProvider';
 import { loadStripe } from '@stripe/stripe-js';
-import { Elements, useElements } from '@stripe/react-stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+import { login, logout } from './features/userSlice';
+import { useDispatch } from 'react-redux';
 
 const promise = loadStripe(
-  'pk_test_51HRMKQL221fWhTuXVgeUVNyK3i520jAJ4vxQUHGhqauPseJ6pW8mAOAI5hNIgjODASqo0oDVjbk4a1oQ8pVn4ze900y275W54m'
+  "pk_test_51IJTUkDLRmlo2iYv745IwmovVzJ5chWXCZ0PK0CfOC8UXbcs0KvOtM60cThtWgxiWZ34oWr6O5QbrJYwhW3y6OOO00ntDFn7qn"
 );
 
 function App() {
-  const [{}, dispatch] = useStateValue();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // only run once when app component loads... dynamic if statement
-    auth.onAuthStateChanged(authUser => {
-      console.log('user is', authUser);
-
+    auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         // user just logged in/was logged in
-        dispatch({
-          type: 'SET_USER',
-          user: authUser
-        })
+        dispatch(
+          login(authUser)
+        );
       } else {
         // user is logged out
-        dispatch({
-          type: 'SET_USER',
-          user: null
-        })
+        dispatch(logout());
       }
-    })
-  }, [])
+    });
+
+  }, [dispatch])
 
   return (
     <Router>

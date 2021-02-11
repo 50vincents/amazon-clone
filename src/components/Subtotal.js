@@ -1,13 +1,14 @@
 import React from 'react'
 import '../styles/Subtotal.css';
 import CurrencyFormat from 'react-currency-format';
-import { useStateValue } from '../react-context/StateProvider';
-import { getBasketTotal } from '../react-context/reducer';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectBasket, getBasketTotal } from '../features/basketSlice';
 
 function Subtotal() {
   const history = useHistory();
-  const [{ basket }, dispatch] = useStateValue();
+  const basket = useSelector(selectBasket);
+  const totalBasket = useSelector(getBasketTotal);
 
   const redirect = (e) => {
     history.push('/payment')
@@ -27,7 +28,7 @@ function Subtotal() {
           </>
         )}
         decimalScale={2} // decimal places
-        value={getBasketTotal(basket)} // subtotal sum, gets passed back in above
+        value={totalBasket} // subtotal sum, gets passed back in above
         displayType={"text"}
         thousandSeparator={true} // comma separator
         prefix={"$"} // USD

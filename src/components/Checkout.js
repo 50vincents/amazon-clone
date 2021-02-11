@@ -2,10 +2,13 @@ import React from 'react'
 import '../styles/Checkout.css';
 import Subtotal from './Subtotal';
 import CheckoutProduct from './CheckoutProduct';
-import { useStateValue } from '../react-context/StateProvider';
+import { selectBasket } from '../features/basketSlice';
+import { selectUser } from '../features/userSlice';
+import { useSelector } from 'react-redux';
 
 function Checkout() {
-  const [{ basket, user }, dispatch] = useStateValue();
+  const user = useSelector(selectUser);
+  const basket = useSelector(selectBasket);
 
   return (
     <div className='checkout'>

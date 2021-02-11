@@ -1,23 +1,22 @@
 import React from 'react'
 import '../styles/Product.css';
-import { useStateValue } from '../react-context/StateProvider';
+import { useDispatch } from 'react-redux';
+import { addToBasket } from '../features/basketSlice';
 
 function Product({ id, title, image, price, rating }) {
+  const dispatch = useDispatch();
 
-  const [state, dispatch] = useStateValue();
-
-  const addToBasket = () => {
+  const addBasket = () => {
     // Dispatch item to data layer
-    dispatch({
-      type: 'ADD_TO_BASKET',
-      item: {
+    dispatch(
+      addToBasket({
         id: id,
         title: title,
         image: image,
         price: price,
         rating: rating,
-      },
-    });
+      })
+    );
   };
 
   return (
@@ -41,7 +40,7 @@ function Product({ id, title, image, price, rating }) {
         </div>
 
         <img src={image} alt="" />
-        <button onClick={addToBasket}>Add to Basket</button>
+        <button onClick={addBasket}>Add to Basket</button>
     </div>
   )
 }

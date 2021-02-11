@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react'
-import { useStateValue } from '../react-context/StateProvider';
 import '../styles/Payment.css';
 import CheckoutProduct from './CheckoutProduct';
 import { Link, useHistory } from 'react-router-dom';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import CurrencyFormat from 'react-currency-format';
-import { getBasketTotal } from '../react-context/reducer';
 import axios from '../axios';
 import { db } from '../firebase';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectUser } from '../features/userSlice';
+import { selectBasket, getBasketTotal, emptyBasket } from '../features/basketSlice';
 
 function Payment() {
-  const [{ basket, user }, dispatch] = useStateValue();
+  const user = useSelector(selectUser);
+  const basket = useSelector(selectBasket);
+  const basketTotal = useSelector(getBasketTotal);
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const stripe = useStripe();
   const elements = useElements();
@@ -29,14 +33,14 @@ function Payment() {
       const response = await axios({
         method: 'post',
         // Stripe expects total in a currencies subunits
-        url: `/payments/create?total=${getBasketTotal(basket) * 100}`
+        url: `/payments/create?total=${basketTotal * 100}`
       });
       // Have payment to send to stripe, get client secret
       setClientSecret(response.data.clientSecret)
     }
 
     getClientSecret();
-  }, [basket]) // Every time basket changes in payment page, new req sent to stripe with new client secret
+  }, [basketTotal]) // Every time basket changes in payment page, new req sent to stripe with new client secret
 
 
   const handleSubmit = async(event) => {
@@ -67,9 +71,7 @@ function Payment() {
       setError(null);
       setProcessing(false);
 
-      dispatch({
-        type: 'EMPTY_BASKET'
-      })
+      dispatch(emptyBasket());
 
       history.replace('/orders'); // Swap payment page, don't want to go back so no push
     })
@@ -95,7 +97,7 @@ function Payment() {
           </div>
           <div className='payment-address'>
             <p>{user?.email}</p>
-            <p>Addresss</p>
+            <p>Address</p>
             <p>City</p>
           </div>
         </div>
@@ -131,7 +133,7 @@ function Payment() {
                       <h3>Order Total: {value}</h3>                     
                     )}
                     decimalScale={2} // decimal places
-                    value={getBasketTotal(basket)} // subtotal sum, gets passed back in above
+                    value={basketTotal} // subtotal sum, gets passed back in above
                     displayType={"text"}
                     thousandSeparator={true} // comma separator
                     prefix={"$"} // USD
