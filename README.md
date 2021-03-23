@@ -2,4 +2,4 @@
 
 URL: https://clone-18e27.web.app/
 
-Amazon full e-commerce clone. REST API built with Node.js and Firebase cloud functions, connected to front end React components. Integrated Stripe API for payment authentication. 
+Full e-commerce functionality utilizing React, Redux, hooks, and selectors for order history and shopping cart data management. Built RESTful API routes with Node.js and Firebase cloud functions, and integrated Stripe for payment processing.
